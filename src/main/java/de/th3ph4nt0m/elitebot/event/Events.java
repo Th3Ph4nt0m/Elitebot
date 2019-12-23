@@ -7,6 +7,8 @@ import de.th3ph4nt0m.elitebot.utils.ChannelHistory;
 
 public class Events {
 
+    //test
+
     public static void loadEvents(){
         Elitebot.api.registerAllEvents();
         Elitebot.api.addTS3Listeners(new TS3Listener() {
