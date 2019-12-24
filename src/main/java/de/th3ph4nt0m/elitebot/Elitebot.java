@@ -3,6 +3,7 @@ package de.th3ph4nt0m.elitebot;
 import com.github.theholywaffle.teamspeak3.TS3Api;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
+import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import de.th3ph4nt0m.elitebot.event.Events;
 import de.th3ph4nt0m.elitebot.utils.ChannelHistory;
 
@@ -20,7 +21,7 @@ public class Elitebot {
     public static final TS3Query query = new TS3Query(config);
     public  static final TS3Api api = new TS3Api(query);
 
-    public static void main(String[] args){
+    public void main(String[] args){
         config.setHost("eliteblocks.eu");
         config.setFloodRate(TS3Query.FloodRate.UNLIMITED);
         config.setDebugLevel(Level.ALL);
@@ -29,6 +30,7 @@ public class Elitebot {
         api.selectVirtualServerById(1);
         api.setNickname("Elitebot");
         Events.loadEvents();
+        this.startAFKMover();
         System.out.println("Bot started!");
     }
 
@@ -42,5 +44,24 @@ public class Elitebot {
                 }
             }
         }, 5*1000, 5*1000);
+    }
+
+    public void startAFKMover(){
+        Timer timer = new Timer();
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                for(Client clients : api.getClients()){
+                    if(clients.getIdleTime() >= 1000*60*15){
+                        if(!clients.isInServerGroup(109)){
+                            Elitebot.api.moveClient(clients.getId(), 171);
+                        }else{
+                            Elitebot.api.moveClient(clients.getId(), 151);
+                        }
+                    }
+                }
+            }
+        }, 0,5*1000);
     }
 }
