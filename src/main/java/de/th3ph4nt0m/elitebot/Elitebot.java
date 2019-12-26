@@ -61,6 +61,9 @@ public class Elitebot {
                             Elitebot.api.moveClient(clients.getId(), 151);
                         }
                     }
+                    if(clients.getIdleTime() >= 1000*60*60*5){
+                        Elitebot.api.kickClientFromServer("You were away too long...", clients);
+                    }
                 }
             }
         }, 0,5*1000);
