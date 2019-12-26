@@ -31,6 +31,7 @@ public class Elitebot {
         api.setNickname("Elitebot");
         Events.loadEvents();
         this.startAFKMover();
+        this.startRecordCheck();
         System.out.println("Bot started!");
     }
 
@@ -63,5 +64,20 @@ public class Elitebot {
                 }
             }
         }, 0,5*1000);
+    }
+
+    public void startRecordCheck(){
+        Timer timer = new Timer();
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                for(Client clients : Elitebot.api.getClients()){
+                    if(clients.isRecording()){
+                        Elitebot.api.kickClientFromServer("Recording is not allowed here!", clients);
+                    }
+                }
+            }
+        }, 100, 1000);
     }
 }
