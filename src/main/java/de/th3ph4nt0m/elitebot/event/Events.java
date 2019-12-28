@@ -12,7 +12,18 @@ public class Events {
         Elitebot.api.registerAllEvents();
         Elitebot.api.addTS3Listeners(new TS3Listener() {
             public void onTextMessage(TextMessageEvent textMessageEvent) {
-
+                if(textMessageEvent.getMessage().startsWith("!msgall")){
+                    String[] args = textMessageEvent.getMessage().split(" ");
+                    String msg = "";
+                    for(int i = 1; i<args.length; i++){
+                        msg = msg + " " + args[i];
+                    }
+                    for(Client clients : Elitebot.api.getClients()){
+                        if(clients.getId() != textMessageEvent.getInvokerId()){
+                            Elitebot.api.sendPrivateMessage(clients.getId(), "[color=orange]-->[color=red]BROADCAST MESSAGE:[/color][br]" + msg);
+                        }
+                    }
+                }
             }
 
             public void onClientJoin(ClientJoinEvent clientJoinEvent) {
