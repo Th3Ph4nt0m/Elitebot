@@ -5,23 +5,29 @@ import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import de.th3ph4nt0m.elitebot.event.Events;
+import de.th3ph4nt0m.elitebot.manager.ArangoManager;
 import de.th3ph4nt0m.elitebot.utils.ChannelHistory;
+import de.th3ph4nt0m.elitebot.utils.DataPlayer;
+import lombok.Getter;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.logging.Level;
 
 public class Elitebot {
 
     public static HashMap<Integer, ChannelHistory> clientChanneLHistory = new HashMap<Integer, ChannelHistory>();
 
+    public static ArangoManager arangoManager;
+
+    public static LinkedHashMap<Integer, DataPlayer> onlineusers;
+
     public static final TS3Config config = new TS3Config();
     public static final TS3Query query = new TS3Query(config);
     public  static final TS3Api api = new TS3Api(query);
 
-    public void main(String[] args){
+
+
+    public static void main(String[] args){
         config.setHost("eliteblocks.eu");
         config.setFloodRate(TS3Query.FloodRate.UNLIMITED);
         config.setDebugLevel(Level.ALL);
@@ -29,13 +35,18 @@ public class Elitebot {
         api.login("serveradmin", "Phant0m_01");
         api.selectVirtualServerById(1);
         api.setNickname("Elitebot");
+        onlineusers = new LinkedHashMap<Integer, DataPlayer>();
+        arangoManager = new ArangoManager("eliteblocks.eu", 4685, "root","46821973","server");
+        arangoManager.connect();
         Events.loadEvents();
-        this.startAFKMover();
-        this.startRecordCheck();
+
+
+        startAFKMover();
+        startRecordCheck();
         System.out.println("Bot started!");
     }
 
-    public void updateChannelHistory(){
+    public static void updateChannelHistory(){
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -47,7 +58,7 @@ public class Elitebot {
         }, 5*1000, 5*1000);
     }
 
-    public void startAFKMover(){
+    public static void startAFKMover(){
         Timer timer = new Timer();
 
         timer.schedule(new TimerTask() {
@@ -56,8 +67,10 @@ public class Elitebot {
                 for(Client clients : api.getClients()){
                     if(clients.getIdleTime() >= 1000*60*15){
                         if(!clients.isInServerGroup(109)){
+                            if(clients.getChannelId() != 171)
                             Elitebot.api.moveClient(clients.getId(), 171);
                         }else{
+                            if(clients.getChannelId() != 151)
                             Elitebot.api.moveClient(clients.getId(), 151);
                         }
                     }
@@ -69,7 +82,7 @@ public class Elitebot {
         }, 0,5*1000);
     }
 
-    public void startRecordCheck(){
+    public static void startRecordCheck(){
         Timer timer = new Timer();
 
         timer.schedule(new TimerTask() {
