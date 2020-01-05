@@ -23,11 +23,10 @@ public class Elitebot {
 
     public static final TS3Config config = new TS3Config();
     public static final TS3Query query = new TS3Query(config);
-    public  static final TS3Api api = new TS3Api(query);
+    public static final TS3Api api = new TS3Api(query);
 
 
-
-    public static void main(String[] args){
+    public static void main(String[] args) {
         config.setHost("eliteblocks.eu");
         config.setFloodRate(TS3Query.FloodRate.UNLIMITED);
         config.setDebugLevel(Level.ALL);
@@ -36,7 +35,7 @@ public class Elitebot {
         api.selectVirtualServerById(1);
         api.setNickname("Elitebot");
         onlineusers = new LinkedHashMap<Integer, DataPlayer>();
-        arangoManager = new ArangoManager("eliteblocks.eu", 4685, "root","46821973","server");
+        arangoManager = new ArangoManager("eliteblocks.eu", 4685, "root", "46821973", "server");
         arangoManager.connect();
         Events.loadEvents();
 
@@ -46,50 +45,50 @@ public class Elitebot {
         System.out.println("Bot started!");
     }
 
-    public static void updateChannelHistory(){
+    public static void updateChannelHistory() {
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                for(Map.Entry e : clientChanneLHistory.entrySet()){
+                for (Map.Entry e : clientChanneLHistory.entrySet()) {
                     ((ChannelHistory) e.getValue()).rmvChannel();
                 }
             }
-        }, 5*1000, 5*1000);
+        }, 5 * 1000, 5 * 1000);
     }
 
-    public static void startAFKMover(){
+    public static void startAFKMover() {
         Timer timer = new Timer();
 
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                for(Client clients : api.getClients()){
-                    if(clients.getIdleTime() >= 1000*60*15){
-                        if(!clients.isInServerGroup(109)){
-                            if(clients.getChannelId() != 171)
-                            Elitebot.api.moveClient(clients.getId(), 171);
-                        }else{
-                            if(clients.getChannelId() != 151)
-                            Elitebot.api.moveClient(clients.getId(), 151);
+                for (Client clients : api.getClients()) {
+                    if (clients.getIdleTime() >= 1000 * 60 * 15) {
+                        if (!clients.isInServerGroup(109)) {
+                            if (clients.getChannelId() != 171)
+                                Elitebot.api.moveClient(clients.getId(), 171);
+                        } else {
+                            if (!clients.isInServerGroup(69) && clients.getChannelId() != 151)
+                                Elitebot.api.moveClient(clients.getId(), 151);
                         }
                     }
-                    if(clients.getIdleTime() >= 1000*60*60*5){
+                    if (clients.getIdleTime() >= 1000 * 60 * 60 * 5) {
                         Elitebot.api.kickClientFromServer("You were away too long...", clients);
                     }
                 }
             }
-        }, 0,5*1000);
+        }, 0, 5 * 1000);
     }
 
-    public static void startRecordCheck(){
+    public static void startRecordCheck() {
         Timer timer = new Timer();
 
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                for(Client clients : Elitebot.api.getClients()){
-                    if(clients.isRecording()){
+                for (Client clients : Elitebot.api.getClients()) {
+                    if (clients.isRecording()) {
                         Elitebot.api.kickClientFromServer("Recording is not allowed here!", clients);
                     }
                 }
