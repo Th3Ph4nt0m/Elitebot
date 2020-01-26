@@ -5,21 +5,19 @@ import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import de.th3ph4nt0m.elitebot.event.Events;
-import de.th3ph4nt0m.elitebot.manager.ArangoManager;
 import de.th3ph4nt0m.elitebot.utils.ChannelHistory;
-import de.th3ph4nt0m.elitebot.utils.DataPlayer;
-import lombok.Getter;
+import de.th3ph4nt0m.elitebot.utils.SQL;
 
 import java.util.*;
 import java.util.logging.Level;
 
 public class Elitebot {
 
+    private static SQL sql;
+
     public static HashMap<Integer, ChannelHistory> clientChanneLHistory = new HashMap<Integer, ChannelHistory>();
 
-    public static ArangoManager arangoManager;
 
-    public static LinkedHashMap<Integer, DataPlayer> onlineusers;
 
     public static final TS3Config config = new TS3Config();
     public static final TS3Query query = new TS3Query(config);
@@ -34,12 +32,8 @@ public class Elitebot {
         api.login("serveradmin", "Phant0m_01");
         api.selectVirtualServerById(1);
         api.setNickname("Elitebot");
-        onlineusers = new LinkedHashMap<Integer, DataPlayer>();
-        arangoManager = new ArangoManager("eliteblocks.eu", 4685, "root", "46821973", "server");
-        arangoManager.connect();
         Events.loadEvents();
-
-
+        sql.connect();
         startAFKMover();
         startRecordCheck();
         System.out.println("Bot started!");
