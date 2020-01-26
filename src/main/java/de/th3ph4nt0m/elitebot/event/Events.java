@@ -2,13 +2,8 @@ package de.th3ph4nt0m.elitebot.event;
 
 import com.github.theholywaffle.teamspeak3.api.event.*;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
-import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
 import de.th3ph4nt0m.elitebot.Elitebot;
 import de.th3ph4nt0m.elitebot.utils.ChannelHistory;
-import de.th3ph4nt0m.elitebot.utils.DataPlayer;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class Events {
 
@@ -34,27 +29,9 @@ public class Events {
             public void onClientJoin(ClientJoinEvent clientJoinEvent) {
                 Client c = Elitebot.api.getClientInfo(clientJoinEvent.getClientId());
                 Elitebot.clientChanneLHistory.put(c.getId(), new ChannelHistory());
-/*                DataPlayer dataPlayer = Elitebot.arangoManager.getUser(clientJoinEvent.getInvokerUniqueId());
-
-                if (dataPlayer.getLastlogout() == 0) {
-                    Elitebot.api.sendPrivateMessage(clientJoinEvent.getClientId(), "Wilkommen");
-                } else {
-                    Date date = new Date(dataPlayer.getLastlogout());
-                    String year = (new SimpleDateFormat("dd.MM.yyyy")).format(date);
-                    String hour_min = (new SimpleDateFormat("HH:mm:ss")).format(date);
-
-                    Elitebot.api.sendPrivateMessage(clientJoinEvent.getClientId(), "Du warst das letzte mal am" + year + " um" + hour_min + " Online");
-                }*/
             }
 
             public void onClientLeave(ClientLeaveEvent event) {
- /*               System.out.println("1");
-                DataPlayer dataPlayer = Elitebot.arangoManager.getUser(event.getInvokerUniqueId());
-                System.out.println("2");
-                dataPlayer.setLastlogout(System.currentTimeMillis() + 0);
-                System.out.println("3");
-                Elitebot.arangoManager.updateUser(dataPlayer);
-                System.out.println("create");*/
             }
 
             public void onServerEdit(ServerEditedEvent serverEditedEvent) {
